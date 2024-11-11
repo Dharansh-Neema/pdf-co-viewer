@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.688.0",
+    "aws-sdk": "^2.1692.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dot-env": "^0.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-fileupload": "^1.5.1",
+    "express-session": "^1.18.1",
+    "firebase-admin": "^12.7.0",
+    "google-auth-library": "^9.14.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.1",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pdfjs-dist": "^4.8.69",
+    "redis": "^4.7.0",
+    "socket.io": "^4.8.1"
+  },
+  "name": "pdf-coviewer",
+  "version": "1.0.0",
+  "description": "This is task to view pdf synchronized for all the users ",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Dharansh Neema",
+  "license": "ISC"
+}

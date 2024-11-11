@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Synchronized PDF Viewer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">PDF Sync Viewer</a>
+        <div id="auth-buttons" class="d-flex align-items-center">
+          <!-- Login button (shown when logged out) -->
+          <button
+            id="login-btn"
+            class="btn btn-outline-light me-2"
+            style="display: none"
+          >
+            <img
+              src="/images/google-logo.svg"
+              alt="Google"
+              class="me-2"
+              height="18"
+            />
+            Sign in with Google
+          </button>
+
+          <!-- User menu (shown when logged in) -->
+          <div id="user-menu" class="dropdown" style="display: none">
+            <button
+              class="btn btn-outline-light dropdown-toggle"
+              type="button"
+              id="userDropdown"
+              data-bs-toggle="dropdown"
+            >
+              <img
+                id="user-picture"
+                src=""
+                alt=""
+                class="rounded-circle me-2"
+                height="24"
+              />
+              <span id="user-name"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <button id="logout-btn" class="dropdown-item">Sign Out</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Auth error alert -->
+    <div
+      id="auth-error"
+      class="alert alert-danger alert-dismissible fade"
+      role="alert"
+      style="display: none"
+    >
+      Authentication failed. Please try again.
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="container mt-5">
+      <div id="upload-section" class="mb-4">
+        <form id="upload-form">
+          <div class="mb-3">
+            <label for="pdf-file" class="form-label">Upload PDF</label>
+            <input
+              type="file"
+              class="form-control"
+              id="pdf-file"
+              accept=".pdf"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+      </div>
+
+      <div id="documents-list" class="mb-4"></div>
+
+      <div id="pdf-viewer" class="text-center">
+        <canvas id="pdf-canvas"></canvas>
+        <div class="mt-3" id="controls">
+          <button id="prev-page" class="btn btn-secondary">Previous</button>
+          <span id="page-num" class="mx-3">Page: 1</span>
+          <button id="next-page" class="btn btn-secondary">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/uploadManager.js"></script>
+    <script src="/js/pdfviewer.js"></script>
+    <script src="/js/socket.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/documentList.js"></script>
+    <script>
+      // Initialize authentication
+      const auth = new AuthManager();
+
+      // Listen for auth state changes
+      auth.addAuthStateListener((user) => {
+        const loginBtn = document.getElementById("login-btn");
+        const userMenu = document.getElementById("user-menu");
+        const uploadSection = document.getElementById("upload-section");
+
+        if (user) {
+          // Update UI for authenticated user
+          loginBtn.style.display = "none";
+          userMenu.style.display = "block";
+          document.getElementById("user-name").textContent = user.name;
+          document.getElementById("user-picture").src = user.picture;
+
+          // Show upload section if user is admin
+          if (user.isAdmin) {
+            uploadSection.style.display = "block";
+          }
+
+          // Load documents after successful authentication
+          documentList.loadDocuments();
+        } else {
+          // Update UI for logged out state
+          loginBtn.style.display = "block";
+          userMenu.style.display = "none";
+          uploadSection.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
